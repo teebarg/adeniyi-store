@@ -59,7 +59,8 @@ const Checkout = () => {
       <div className="p-4 md:px-8 lg:px-16 gap-4 grid-cols-1 grid md:grid-cols-5">
         <div className="col-span-3 bg-white p-4 rounded">
           <h3 className="mb-3">Address</h3>
-          <form action="">
+          <form name="Contact Form" method="POST" data-netlify="true">
+            <input type="hidden" name="checkoutForm" value="Contact Form" />
             <FormRow>
               <FormGroup>
                 <label htmlFor="firstname">FirstName</label>
