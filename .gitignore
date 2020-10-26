@@ -58,5 +58,19 @@ public/
 # Bundle stats
 bundle-stats.json
 
+# gatsby files
+.cache/
+public
+
 # macOS
 .DS_Store
+
+.env
+.env.development
+.env.*
+
+.wordpress-cache
+WordPress/GraphQL
+
+.vscode
+.idea/

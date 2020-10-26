@@ -1,30 +1,40 @@
 import React, { Component } from "react";
 import { Helmet } from "react-helmet";
 import urljoin from "url-join";
-import moment from "moment";
 import config from "../../../data/SiteConfig";
 
 class SEO extends Component {
   render() {
-    const { postNode, postPath, postSEO } = this.props;
+    const {
+      productSeo,
+      productListingSeo,
+      category,
+    } = this.props;
     let title;
     let description;
     let image;
-    let postURL;
 
-    if (postSEO) {
-      const postMeta = postNode.frontmatter;
-      ({ title } = postMeta);
-      description = postMeta.description
-        ? postMeta.description
-        : postNode.excerpt;
-      image = postMeta.cover;
-      postURL = urljoin(config.siteUrl, config.pathPrefix, postPath);
+    if (productSeo) {
+      description = productSeo.description;
+      title = productSeo.name;
+      image = productSeo.image.sourceUrl;
     } else {
-      title = config.siteTitle;
-      description = config.siteDescription;
+      title = config.siteDescription;
+      description = config.description;
       image = config.siteLogo;
     }
+
+    const items = () => {
+      let result = new Set();
+      for (let i = 0; i < productListingSeo.length && i < 4; i++) {
+        result.add({
+          "@type": "ListItem",
+          position: i + 1,
+          url: `${config.siteUrl}/${productListingSeo[i].slug}`,
+        });
+      }
+      return result;
+    };
 
     const getImagePath = (imageURI) => {
       if (
@@ -37,78 +47,75 @@ class SEO extends Component {
       return imageURI;
     };
 
-    const getPublicationDate = () => {
-      if (!postNode) return null;
-
-      if (!postNode.frontmatter) return null;
-
-      if (!postNode.frontmatter.date) return null;
-
-      return moment(postNode.frontmatter.date, config.dateFromFormat).toDate();
-    };
-
     image = getImagePath(image);
 
-    const datePublished = getPublicationDate();
-
-    const authorJSONLD = {
-      "@type": "Person",
-      name: config.userName,
-      email: config.userEmail,
-      address: config.userLocation,
-    };
-
-    const logoJSONLD = {
-      "@type": "ImageObject",
-      url: getImagePath(config.siteLogo),
-    };
-
-    const blogURL = urljoin(config.siteUrl, config.pathPrefix);
     const schemaOrgJSONLD = [
       {
         "@context": "http://schema.org",
         "@type": "WebSite",
-        url: blogURL,
+        url: config.siteUrl,
         name: title,
-        alternateName: config.siteTitleAlt ? config.siteTitleAlt : "",
+        alternateName: config.siteTitleAlt,
       },
     ];
-    if (postSEO) {
+
+    if (productSeo) {
+      schemaOrgJSONLD.push({
+        "@context": "http://schema.org",
+        "@type": "Product",
+        name: title,
+        image: { "@type": "ImageObject", url: image },
+        description,
+        sku: productSeo.sku,
+        offers: {
+          "@type": "Offer",
+          url: productSeo.url,
+          priceCurrency: "NGN",
+          price: productSeo.salePrice,
+          priceValidUntil: "2020-11-21",
+          availability: "https://schema.org/InStock",
+          seller: {
+            "@type": "Organization",
+            name: config.siteTitle,
+          },
+        },
+      });
+    }
+
+    if (productListingSeo) {
       schemaOrgJSONLD.push(
         {
-          "@context": "http://schema.org",
+          "@context": "https://schema.org",
           "@type": "BreadcrumbList",
           itemListElement: [
             {
               "@type": "ListItem",
               position: 1,
-              item: {
-                "@id": postURL,
-                name: title,
-                image,
-              },
+              name: "Home",
+              item: config.siteUrl,
+            },
+            {
+              "@type": "ListItem",
+              position: 2,
+              name: category,
+              item: `${config.siteUrl}/category`,
             },
           ],
         },
         {
           "@context": "http://schema.org",
-          "@type": "BlogPosting",
-          url: blogURL,
-          name: title,
-          alternateName: config.siteTitleAlt ? config.siteTitleAlt : "",
-          headline: title,
-          image: { "@type": "ImageObject", url: image },
-          author: authorJSONLD,
-          publisher: {
-            ...authorJSONLD,
-            "@type": "Organization",
-            logo: logoJSONLD,
+          "@type": "CollectionPage",
+          name: category,
+          url: `${config.siteUrl}/category`,
+          description: `Choose from the widest collections of ${category} items in Lagos Nigeria`,
+          mainEntity: {
+            "@type": "ItemList",
+            itemListElement: [...items()],
           },
-          datePublished,
-          description,
         }
       );
     }
+
     return (
       <Helmet>
         {/* General tags */}
@@ -121,9 +128,12 @@ class SEO extends Component {
         </script>
 
         {/* OpenGraph tags */}
-        <meta property="og:url" content={postSEO ? postURL : blogURL} />
-        {postSEO ? <meta property="og:type" content="article" /> : null}
-        <meta property="og:title" content={title} />
+        <meta
+          property="og:url"
+          content={productSeo ? productSeo.url : config.siteUrl}
+        />
+        <meta property="og:type" content="product" />
+        <meta property="og:title" content={`${title} | ${config.siteTitle}`} />
         <meta property="og:description" content={description} />
         <meta property="og:image" content={image} />
         <meta
@@ -137,7 +147,7 @@ class SEO extends Component {
           name="twitter:creator"
           content={config.userTwitter ? config.userTwitter : ""}
         />
-        <meta name="twitter:title" content={title} />
+        <meta name="twitter:title" content={`${title} | ${config.siteTitle}`} />
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={image} />
       </Helmet>

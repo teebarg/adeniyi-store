@@ -1,0 +1,154 @@
+@tailwind components;
+@tailwind utilities;
+
+body {
+  --color-white: #fff;
+  --color-black: #232020;
+  --color-black-light: #6b778d;
+  --color-hash: #f4f4f4;
+  --primary: #ff7315;
+  --bg: #fff;
+  --bg-secondary: #e2e8f0;
+  --lightBg: #f5f5f5;
+  --textNormal: #181818;
+  --textTitle: #181818;
+  --textLink: #fd5e53;
+  --hr: hsla(0, 20%, 1%, 0.2);
+
+  background-color: var(--color-white);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+#___gatsby #gatsby-focus-wrapper {
+  min-height: 100vh;
+}
+
+h1,
+h3,
+h4,
+img,
+ul,
+li {
+  margin: 0;
+}
+
+.bg-hash {
+  background: var(--color-hash);
+}
+
+.text-primary {
+  color: var(--primary);
+}
+
+.text-black-c {
+  color: var(--color-black);
+}
+
+.carousel .thumbs-wrapper {
+  overflow: auto !important;
+}
+
+.carousel-root {
+  justify-self: center;
+}
+
+.thumbs-wrapper li {
+  width: 50px !important;
+}
+
+.carousel .thumb.selected,
+.carousel .thumb:hover {
+  border: 1px solid red !important;
+}
+
+.carousel .thumbs-wrapper {
+  margin: 10px !important;
+}
+
+.carousel .thumb {
+  border: none !important;
+}
+
+.carousel .thumbs {
+  transform: none !important;
+}
+
+.video-react .video-react-poster {
+  background-size: cover !important;
+}
+
+.video-react .video-react-big-play-button {
+  top: calc(50% - 0.75rem) !important;
+  left: 50% !important;
+}
+
+.header-dark {
+  background-color: var(--color-black);
+}
+.header-trans {
+  background-color: transparent;
+}
+
+button {
+  border: none;
+  margin: 0;
+  padding: 0;
+  width: auto;
+  overflow: visible;
+
+  background: transparent;
+  cursor: pointer;
+
+  /* inherit font & color from ancestor */
+  color: inherit;
+  font: inherit;
+
+  /* Normalize `line-height`. Cannot be changed from `normal` in Firefox 4+. */
+  line-height: normal;
+
+  /* Corrects font smoothing for webkit */
+  -webkit-font-smoothing: inherit;
+  -moz-osx-font-smoothing: inherit;
+
+  /* Corrects inability to style clickable `input` types in iOS */
+  -webkit-appearance: none;
+
+  outline: 0;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+@media (max-width: 768px) {
+  .thumbs-wrapper li {
+    width: auto !important;
+    max-width: 100px;
+  }
+  .carousel .thumbs {
+    width: 90%;
+    overflow: auto;
+    margin: auto;
+  }
+}

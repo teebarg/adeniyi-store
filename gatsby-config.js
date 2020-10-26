@@ -1,6 +1,9 @@
 const urljoin = require("url-join");
 const path = require("path");
 const config = require("./data/SiteConfig");
+require("dotenv").config({
+  path: `.env.${process.env.NODE_ENV}`,
+})
 
 module.exports = {
   pathPrefix: config.pathPrefix === "" ? "/" : config.pathPrefix,
@@ -20,7 +23,37 @@ module.exports = {
   },
   plugins: [
     "gatsby-plugin-react-helmet",
+    // Simple config, passing URL
+    {
+      resolve: "gatsby-source-graphql",
+      options: {
+        // Arbitrary name for the remote schema Query type
+        typeName: "BEAF",
+        // Field under which the remote schema will be accessible. You'll use this in your Gatsby query
+        fieldName: "beaf",
+        // Url to query from
+        url: process.env.WPGRAPHQL_URL,
+        // refetch interval in seconds
+        refetchInterval: 3600,
+      },
+    },
     "gatsby-plugin-lodash",
+    `gatsby-plugin-emotion`,
+    {
+      resolve: `gatsby-plugin-typography`,
+      options: {
+        pathToConfigModule: `src/utils/typography`,
+      },
+    },
+    {
+      resolve: `gatsby-plugin-sass`,
+      options: {
+        postCssPlugins: [
+          require("tailwindcss"),
+          require("./tailwind.config.js"), // Optional: Load custom Tailwind CSS configuration
+        ],
+      },
+    },
     {
       resolve: "gatsby-source-filesystem",
       options: {
@@ -99,16 +132,6 @@ module.exports = {
       }
     },
     "gatsby-plugin-offline",
-    {
-      resolve: "gatsby-plugin-netlify-cms",
-      options: {
-        modulePath: path.resolve("src/netlifycms/index.js"), // default: undefined
-        enableIdentityWidget: true,
-        publicPath: "admin",
-        htmlTitle: "Content Manager",
-        includeRobots: false
-      }
-    },
     {
       resolve: "gatsby-plugin-feed",
       options: {
