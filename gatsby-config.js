@@ -47,7 +47,7 @@ module.exports = {
           hardCacheMediaFiles: true,
         },
         schema: {
-          timeout: 100000
+          timeout: 1000000
         },
         debug: {
           graphql: {
