@@ -13,13 +13,11 @@ exports.createPages = async ({ graphql, actions }) => {
 
   const test = await graphql(`
     {
-      beaf {
-        products(first: 100000) {
-          nodes {
-            id
-            name
-            slug
-          }
+      allWpProduct {
+        nodes {
+          id
+          name
+          slug
         }
       }
     }
@@ -27,18 +25,16 @@ exports.createPages = async ({ graphql, actions }) => {
 
   const getCategories = await graphql(`
     {
-      beaf {
-        productCategories {
-          nodes {
-            slug
-          }
+      allWpProductCategory {
+        nodes {
+          slug
         }
       }
     }
   `);
 
-  const categories = getCategories.data.beaf.productCategories.nodes;
-  const productsEdges = test.data.beaf.products.nodes;
+  const categories = getCategories.data.allWpProductCategory.nodes;
+  const productsEdges = test.data.allWpProduct.nodes;
 
   // Product page creating
   productsEdges.forEach((edge, index) => {

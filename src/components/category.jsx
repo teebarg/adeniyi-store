@@ -9,7 +9,7 @@ const Category = () => {
   return (
     <div className="h-full">
       <ul className="list-none">
-        {categories
+        {categories && categories
           .filter((item) => item.slug != "uncategorized")
           .map((category, key) => (
             <li

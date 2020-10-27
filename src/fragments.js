@@ -1,8 +1,8 @@
 import { graphql } from "gatsby";
 
 export const fragments = graphql`
-  fragment ProductDetails on BEAF_Product {
-    ... on BEAF_SimpleProduct {
+  fragment ProductDetails on WpProduct {
+    ... on WpSimpleProduct {
       id
       name
       slug

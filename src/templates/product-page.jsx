@@ -26,7 +26,7 @@ const ProducPage = ({ data, pageContext, location }) => {
   const { setVisible } = useContext(storeContext);
   setVisible(false);
 
-  const product = data.product.product;
+  const product = data.product;
   const { slug } = pageContext;
   return (
     <MainLayout>
@@ -39,7 +39,7 @@ const ProducPage = ({ data, pageContext, location }) => {
           <div className="md:col-span-5 md:flex md:gap-4 md:py-6 md:bg-white">
             <div className="-mx-4 md:mx-0 md:px-6 flex-1 grid ">
               <Carousel>
-                {product.galleryImages.nodes.map((image, key) => (
+                {product.galleryImages && product.galleryImages.nodes.map((image, key) => (
                   <div key={key} className="h-full">
                     <img src={image.sourceUrl} className="h-full" />
                   </div>
@@ -61,11 +61,11 @@ const ProducPage = ({ data, pageContext, location }) => {
                   </svg>
                 </li>
                 <li>
-                  <Breadcrumb
-                    to={`/category/${product.productCategories.nodes[0].slug}`}
+                  { product.productCategories && (<Breadcrumb
+                    to={`/category/${ product.productCategories.nodes[0].slug}`}
                   >
                     {product.productCategories.nodes[0].name}
-                  </Breadcrumb>
+                  </Breadcrumb>)}
                 </li>
                 <li className="flex items-center">
                   <svg
@@ -119,7 +119,7 @@ const ProducPage = ({ data, pageContext, location }) => {
         <div className="mb-10">
           <h3>Related Products</h3>
           <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 overflow-auto mt-4">
-            {product.related.nodes
+            {product.related && product.related.nodes
               .filter((item) => item.slug)
               .map((item) => (
                 <ProdCanvas product={item} key={item.id} />
@@ -134,42 +134,40 @@ const ProducPage = ({ data, pageContext, location }) => {
 export default ProducPage;
 
 export const pageQuery = graphql`
-  query ProductById($id: ID!) {
-    product: beaf {
-      product(id: $id, idType: ID) {
-        ... on BEAF_SimpleProduct {
-          id
-          name
-          slug
-          averageRating
-          reviewCount
-          description
-          shortDescription
-          salePrice
-          regularPrice
-          onSale
-          productId
-          productCategories {
-            nodes {
-              name
-              slug
-            }
+  query ProductById($id: String!) {
+    product: wpProduct(id: {eq: $id}) {
+      ... on WpSimpleProduct {
+        id
+        name
+        slug
+        averageRating
+        reviewCount
+        description
+        shortDescription
+        salePrice
+        regularPrice
+        onSale
+        productId
+        productCategories {
+          nodes {
+            name
+            slug
           }
-          image {
+        }
+        image {
+          sourceUrl
+        }
+        description
+        link
+        sku
+        galleryImages {
+          nodes {
             sourceUrl
           }
-          description
-          link
-          sku
-          galleryImages {
-            nodes {
-              sourceUrl
-            }
-          }
-          related {
-            nodes {
-              ...ProductDetails
-            }
+        }
+        related {
+          nodes {
+            ...ProductDetails
           }
         }
       }

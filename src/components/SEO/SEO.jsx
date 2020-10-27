@@ -17,7 +17,7 @@ class SEO extends Component {
     if (productSeo) {
       description = productSeo.description;
       title = productSeo.name;
-      image = productSeo.image.sourceUrl;
+      image = productSeo.image && productSeo.image.sourceUrl;
     } else {
       title = config.siteDescription;
       description = config.description;
@@ -37,6 +37,7 @@ class SEO extends Component {
     };
 
     const getImagePath = (imageURI) => {
+      if (!imageURI) return null
       if (
         !imageURI.match(
           `(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]`

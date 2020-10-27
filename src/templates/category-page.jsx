@@ -11,7 +11,7 @@ import Input from "../components/input";
 import { css } from "@emotion/core";
 
 const CategoryPage = ({ data, pageContext, location }) => {
-  const products = data.beaf.category.products.nodes;
+  const products = data.category.products.nodes;
   const banner = data.beaf.banner;
   const { category } = pageContext;
   const { setVisible } = useContext(storeContext);
@@ -98,15 +98,15 @@ const CategoryPage = ({ data, pageContext, location }) => {
 export default CategoryPage;
 
 export const pageQuery = graphql`
-  query CatPage($category: ID!) {
-    beaf {
-      category: productCategory(id: $category, idType: SLUG) {
-        products {
-          nodes {
-            ...ProductDetails
-          }
+  query CatPage($category: String!) {
+    category: wpProductCategory(slug: {eq: $category}) {
+      products {
+        nodes {
+          ...ProductDetails
         }
       }
+    }
+    beaf {
       banner: mediaItem(id: "category-ad", idType: SLUG) {
         sourceUrl(size: LARGE)
         srcSet(size: LARGE)
