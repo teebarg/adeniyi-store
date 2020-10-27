@@ -92,7 +92,7 @@ const Checkout = () => {
         </div>
         <div className="col-span-2 py-4 px-4 md:px-0">
           <h3 className="mb-3">Summary</h3>
-          <ul className="bg-white rounded-sm">
+          {cart && (<ul className="bg-white rounded-sm">
             {cart.items &&
               cart.items.map((item) => (
                 <li key={item.key} className="grid grid-cols-3">
@@ -112,7 +112,7 @@ const Checkout = () => {
               <h3 className="uppercase text-gray-700 col-span-2">Total:</h3>
               <h3 className="text-right">{Currency(cart.totals && cart.totals.total_price)}</h3>
             </li>
-          </ul>
+          </ul>)}
         </div>
       </div>
     </MainLayout>

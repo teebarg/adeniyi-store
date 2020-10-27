@@ -116,10 +116,10 @@ const CategoryCircle = styled.div`
   }
 `;
 
-const ProductList = ({ data: { beaf: data }, location }) => {
+const ProductList = ({ data: { beaf: data, bestseller: bs, deal: de }, location }) => {
   const { categories, setVisible } = useContext(storeContext);
-  const deal = data.deal.products.nodes;
-  const bestseller = data.bestseller.products.nodes;
+  const deal = de.products.nodes;
+  const bestseller = bs.products.nodes;
   const banners = data.banners.nodes;
   const ad1 = data.ad1;
   const sidebar = data.sidebar;
@@ -196,7 +196,7 @@ const ProductList = ({ data: { beaf: data }, location }) => {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 justify-center mt-6 px-12">
-          {categories
+          {categories && categories
             .filter((item) => item.slug != "uncategorized")
             .map((item) => (
               <div className="text-center" key={item.slug}>
@@ -335,21 +335,21 @@ export default ProductList;
 
 export const pageQuery = graphql`
   query ProductListing {
+    deal: wpProductTag(slug: {eq: "deal"}) {
+      products {
+        nodes {
+          ...ProductDetails
+        }
+      }
+    }
+    bestseller: wpProductTag(slug: {eq: "bestseller"}) {
+      products {
+        nodes {
+          ...ProductDetails
+        }
+      }
+    }
     beaf {
-      deal: productTag(id: "deal", idType: NAME) {
-        products {
-          nodes {
-            ...ProductDetails
-          }
-        }
-      }
-      bestseller: productTag(id: "bestseller", idType: NAME) {
-        products {
-          nodes {
-            ...ProductDetails
-          }
-        }
-      }
       banners: mediaItems(where: { search: "banner" }) {
         nodes {
           srcSet(size: LARGE)

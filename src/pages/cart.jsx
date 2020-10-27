@@ -104,7 +104,7 @@ const Cart = () => {
           <ul className="order-1 md:order-2 w-full md:w-3/4 justify-self-end">
             <li className="grid grid-cols-2">
               <p className="uppercase text-gray-600">Total Items:</p>
-              <p className="uppercase text-gray-800">{cart.items_count}</p>
+              <p className="uppercase text-gray-800">{cart && cart.items_count}</p>
             </li>
             <li className="grid grid-cols-2">
               <p className="uppercase text-gray-600">Shipping</p>
@@ -112,13 +112,17 @@ const Cart = () => {
             </li>
             <li className="grid grid-cols-2">
               <p className="uppercase text-gray-600">SubTotal</p>
-              <p className="uppercase text-gray-800">
-                {Currency(cart.totals && cart.totals.total_items)}
-              </p>
+              {cart && (
+                <p className="uppercase text-gray-800">
+                  {Currency(cart.totals && cart.totals.total_items)}
+                </p>
+              )}
             </li>
             <li className="grid grid-cols-2 border-0 border-gray-500 border-solid -mx-2 px-2 mt-2 py-2 border-t">
               <h3 className="uppercase text-gray-700">Total:</h3>
-              <h3>{Currency(cart.totals && cart.totals.total_price)}</h3>
+              {cart && (
+                <h3>{Currency(cart.totals && cart.totals.total_price)}</h3>
+              )}
             </li>
           </ul>
         </div>

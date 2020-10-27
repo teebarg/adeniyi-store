@@ -124,7 +124,7 @@ const Foot = () => {
                         <li>
                           <CatLink to={"/"}>Home</CatLink>
                         </li>
-                        {categories
+                        {categories && categories
                           .filter((item) => item.slug != "uncategorized")
                           .map((category, key) => (
                             <li key={key}>
