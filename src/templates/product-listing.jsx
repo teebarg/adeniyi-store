@@ -224,7 +224,7 @@ const ProductList = ({ data: { beaf: data, bestseller: bs, deal: de }, location 
                         color: var(--primary);
                       }
                     `}
-                    to={`/${item.slug}`}
+                    to={`category/${item.slug}`}
                   >
                     {item.name}
                   </Link>
