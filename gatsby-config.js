@@ -32,16 +32,13 @@ module.exports = {
         // Field under which the remote schema will be accessible. You'll use this in your Gatsby query
         fieldName: "beaf",
         // Url to query from
-        url: process.env.WPGRAPHQL_URL ||
-        `http://allure-store.onlinewebshop.net/graphql`
+        url: `http://allure-store.onlinewebshop.net/graphql`
       },
     },
     {
       resolve: `gatsby-source-wordpress-experimental`,
       options: {
-        url:
-          process.env.WPGRAPHQL_URL ||
-          `http://allure-store.onlinewebshop.net/graphql`,
+        url: `http://allure-store.onlinewebshop.net/graphql`,
         verbose: true,
         develop: {
           hardCacheMediaFiles: true,
@@ -63,6 +60,54 @@ module.exports = {
                 : // and we don't actually need more than 5000 in production for this particular site
                   5000,
           },
+          PaSize: {
+            exclude: true
+          },
+          PaColor: {
+            exclude: true
+          },
+          Order: {
+            exclude: true
+          },
+          Page: {
+            exclude: true
+          },
+          TaxRate: {
+            exclude: true
+          },
+          Refund: {
+            exclude: true
+          },
+          ShippingClass: {
+            exclude: true
+          },
+          Comment: {
+            exclude: true
+          },
+          ContentType: {
+            exclude: true
+          },
+          PostFormat: {
+            exclude: true
+          },
+          UserRole: {
+            exclude: true
+          },
+          Coupon: {
+            exclude: true
+          },
+          ShippingMethod: {
+            exclude: true
+          },
+          Customer: {
+            exclude: true
+          },
+          Taxonomy: {
+            exclude: true
+          },
+          User: {
+            exclude: true
+          }
         },
       },
     },
