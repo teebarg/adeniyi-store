@@ -5,16 +5,37 @@ require("dotenv").config({
 const urljoin = require("url-join");
 const config = require("./data/SiteConfig");
 
-const exclude = ['MediaItem', 'VisibleProduct', 'PaymentGateway', 'Menu', 'MenuItem', 'User', 'Taxonomy', 'Customer', 'ShippingMethod', 'Coupon', 'PaSize', 'PaColor', 'Order', 'Page', 'TaxRate', 'Refund', 'ShippingClass', 'Comment', 'ContentType', 'PostFormat', 'UserRole']
+const exclude = [
+  "VisibleProduct",
+  "PaymentGateway",
+  "Menu",
+  "MenuItem",
+  "User",
+  "Taxonomy",
+  "Customer",
+  "ShippingMethod",
+  "Coupon",
+  "PaSize",
+  "PaColor",
+  "Order",
+  "Page",
+  "TaxRate",
+  "Refund",
+  "ShippingClass",
+  "Comment",
+  "ContentType",
+  "PostFormat",
+  "UserRole",
+];
 const excludeList = () => {
-    const obj = {};
-    exclude.forEach(item => {
-      obj[item] = {
-        exclude: true
-      }
-    });
-    return obj;
-}
+  const obj = {};
+  exclude.forEach((item) => {
+    obj[item] = {
+      exclude: true,
+    };
+  });
+  return obj;
+};
 
 module.exports = {
   pathPrefix: config.pathPrefix === "" ? "/" : config.pathPrefix,
@@ -29,21 +50,23 @@ module.exports = {
         config.siteUrl,
         config.pathPrefix
       )}/logos/logo-512.png`,
-      copyright: config.copyright
-    }
+      copyright: config.copyright,
+    },
   },
   plugins: [
     "gatsby-plugin-react-helmet",
     {
       resolve: `gatsby-source-wordpress-experimental`,
       options: {
-        url: `http://allure-store.onlinewebshop.net/graphql`,
+        url:
+          process.env.WPGRAPHQL_URL ||
+          `http://allure-store.onlinewebshop.net/graphql`,
         verbose: true,
         develop: {
           hardCacheMediaFiles: true,
         },
         schema: {
-          timeout: 10000000
+          timeout: 10000000,
         },
         debug: {
           graphql: {
@@ -59,7 +82,7 @@ module.exports = {
                 : // and we don't actually need more than 5000 in production for this particular site
                   5000,
           },
-          ...excludeList()
+          ...excludeList(),
         },
       },
     },
@@ -84,49 +107,49 @@ module.exports = {
       resolve: "gatsby-source-filesystem",
       options: {
         name: "assets",
-        path: `${__dirname}/static/`
-      }
+        path: `${__dirname}/static/`,
+      },
     },
     {
       resolve: "gatsby-source-filesystem",
       options: {
         name: "posts",
-        path: `${__dirname}/content/`
-      }
+        path: `${__dirname}/content/`,
+      },
     },
     {
       resolve: "gatsby-transformer-remark",
       options: {
         plugins: [
           {
-            resolve: `gatsby-remark-relative-images`
+            resolve: `gatsby-remark-relative-images`,
           },
           {
             resolve: "gatsby-remark-images",
             options: {
-              maxWidth: 690
-            }
+              maxWidth: 690,
+            },
           },
           {
-            resolve: "gatsby-remark-responsive-iframe"
+            resolve: "gatsby-remark-responsive-iframe",
           },
           "gatsby-remark-copy-linked-files",
           "gatsby-remark-autolink-headers",
-          "gatsby-remark-prismjs"
-        ]
-      }
+          "gatsby-remark-prismjs",
+        ],
+      },
     },
     {
       resolve: "gatsby-plugin-google-analytics",
       options: {
-        trackingId: config.googleAnalyticsID
-      }
+        trackingId: config.googleAnalyticsID,
+      },
     },
     {
       resolve: "gatsby-plugin-nprogress",
       options: {
-        color: config.themeColor
-      }
+        color: config.themeColor,
+      },
     },
     "gatsby-plugin-sharp",
     "gatsby-transformer-sharp",
@@ -147,16 +170,16 @@ module.exports = {
           {
             src: "/logos/logo-192.png",
             sizes: "192x192",
-            type: "image/png"
+            type: "image/png",
           },
           {
             src: "/logos/logo-512.png",
             sizes: "512x512",
-            type: "image/png"
-          }
-        ]
-      }
+            type: "image/png",
+          },
+        ],
+      },
     },
     "gatsby-plugin-offline",
-  ]
+  ],
 };
