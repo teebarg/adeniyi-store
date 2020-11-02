@@ -12,7 +12,7 @@ import { css } from "@emotion/core";
 
 const CategoryPage = ({ data, pageContext, location }) => {
   const products = data.category.products.nodes;
-  const banner = data.beaf.banner;
+  const banner = null;
   const { category } = pageContext;
   const { setVisible } = useContext(storeContext);
   setVisible(false);
@@ -104,12 +104,6 @@ export const pageQuery = graphql`
         nodes {
           ...ProductDetails
         }
-      }
-    }
-    beaf {
-      banner: mediaItem(id: "category-ad", idType: SLUG) {
-        sourceUrl(size: LARGE)
-        srcSet(size: LARGE)
       }
     }
   }

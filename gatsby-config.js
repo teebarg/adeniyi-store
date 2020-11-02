@@ -5,6 +5,17 @@ require("dotenv").config({
 const urljoin = require("url-join");
 const config = require("./data/SiteConfig");
 
+const exclude = ['VisibleProduct', 'PaymentGateway', 'Menu', 'MenuItem', 'User', 'Taxonomy', 'Customer', 'ShippingMethod', 'Coupon', 'PaSize', 'PaColor', 'Order', 'Page', 'TaxRate', 'Refund', 'ShippingClass', 'Comment', 'ContentType', 'PostFormat', 'UserRole']
+const excludeList = () => {
+    const obj = {};
+    exclude.forEach(item => {
+      obj[item] = {
+        exclude: true
+      }
+    });
+    return obj;
+}
+
 module.exports = {
   pathPrefix: config.pathPrefix === "" ? "/" : config.pathPrefix,
   siteMetadata: {
@@ -23,31 +34,16 @@ module.exports = {
   },
   plugins: [
     "gatsby-plugin-react-helmet",
-    // Simple config, passing URL
-    {
-      resolve: "gatsby-source-graphql",
-      options: {
-        // Arbitrary name for the remote schema Query type
-        typeName: "BEAF",
-        // Field under which the remote schema will be accessible. You'll use this in your Gatsby query
-        fieldName: "beaf",
-        // Url to query from
-        url: process.env.WPGRAPHQL_URL ||
-        `http://allure-store.onlinewebshop.net/graphql`
-      },
-    },
     {
       resolve: `gatsby-source-wordpress-experimental`,
       options: {
-        url:
-          process.env.WPGRAPHQL_URL ||
-          `http://allure-store.onlinewebshop.net/graphql`,
+        url: `http://allure-store.onlinewebshop.net/graphql`,
         verbose: true,
         develop: {
           hardCacheMediaFiles: true,
         },
         schema: {
-          timeout: 100000
+          timeout: 10000000
         },
         debug: {
           graphql: {
@@ -63,6 +59,7 @@ module.exports = {
                 : // and we don't actually need more than 5000 in production for this particular site
                   5000,
           },
+          ...excludeList()
         },
       },
     },
