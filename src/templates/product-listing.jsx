@@ -116,14 +116,14 @@ const CategoryCircle = styled.div`
   }
 `;
 
-const ProductList = ({ data: { beaf: data, bestseller: bs, deal: de }, location }) => {
+const ProductList = ({ data: { bestseller: bs, deal: de }, location }) => {
   const { categories, setVisible } = useContext(storeContext);
   const deal = de.products.nodes;
   const bestseller = bs.products.nodes;
-  const banners = data.banners.nodes;
-  const ad1 = data.ad1;
-  const sidebar = data.sidebar;
-  const videoad = data.videoad;
+  const banners = [];
+  const ad1 = null;
+  const sidebar = [];
+  const videoad = [];
 
   return (
     <MainLayout>
@@ -347,26 +347,6 @@ export const pageQuery = graphql`
         nodes {
           ...ProductDetails
         }
-      }
-    }
-    beaf {
-      banners: mediaItems(where: { search: "banner" }) {
-        nodes {
-          srcSet(size: LARGE)
-          sourceUrl(size: LARGE)
-        }
-      }
-      sidebar: mediaItem(id: "sidebar", idType: SLUG) {
-        sourceUrl(size: LARGE)
-        srcSet(size: LARGE)
-      }
-      ad1: mediaItem(id: "homead-1", idType: SLUG) {
-        sourceUrl(size: LARGE)
-        srcSet(size: LARGE)
-      }
-      videoad: mediaItem(id: "videoad-1", idType: SLUG) {
-        sourceUrl(size: LARGE)
-        srcSet(size: LARGE)
       }
     }
   }
