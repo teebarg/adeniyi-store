@@ -5,7 +5,7 @@ require("dotenv").config({
 const urljoin = require("url-join");
 const config = require("./data/SiteConfig");
 
-const exclude = ['VisibleProduct', 'PaymentGateway', 'Menu', 'MenuItem', 'User', 'Taxonomy', 'Customer', 'ShippingMethod', 'Coupon', 'PaSize', 'PaColor', 'Order', 'Page', 'TaxRate', 'Refund', 'ShippingClass', 'Comment', 'ContentType', 'PostFormat', 'UserRole']
+const exclude = ['MediaItem', 'VisibleProduct', 'PaymentGateway', 'Menu', 'MenuItem', 'User', 'Taxonomy', 'Customer', 'ShippingMethod', 'Coupon', 'PaSize', 'PaColor', 'Order', 'Page', 'TaxRate', 'Refund', 'ShippingClass', 'Comment', 'ContentType', 'PostFormat', 'UserRole']
 const excludeList = () => {
     const obj = {};
     exclude.forEach(item => {
