@@ -1,27 +1,24 @@
 import { graphql } from "gatsby";
 
 export const fragments = graphql`
-  fragment ProductDetails on WpProduct {
-    ... on WpSimpleProduct {
-      id
+  fragment ProductDetails on wcProducts {
+    id
+    name
+    slug
+    average_rating
+    rating_count
+    sale_price
+    regular_price
+    on_sale
+    categories {
       name
-      slug
-      averageRating
-      reviewCount
-      salePrice
-      regularPrice
-      onSale
-      productCategories {
-        nodes {
-          name
-        }
-      }
-      image {
-        sourceUrl
-      }
-      description
-      link
-      sku
+    }
+    description
+    sku
+    permalink
+    images {
+      alt
+      src
     }
   }
 `;

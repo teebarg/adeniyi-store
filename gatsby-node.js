@@ -13,7 +13,7 @@ exports.createPages = async ({ graphql, actions }) => {
 
   const test = await graphql(`
     {
-      allWpProduct {
+      allWcProducts {
         nodes {
           id
           name
@@ -25,7 +25,7 @@ exports.createPages = async ({ graphql, actions }) => {
 
   const getCategories = await graphql(`
     {
-      allWpProductCategory {
+      allWcProductsCategories {
         nodes {
           slug
         }
@@ -33,8 +33,8 @@ exports.createPages = async ({ graphql, actions }) => {
     }
   `);
 
-  const categories = getCategories.data.allWpProductCategory.nodes;
-  const productsEdges = test.data.allWpProduct.nodes;
+  const categories = getCategories.data.allWcProductsCategories.nodes;
+  const productsEdges = test.data.allWcProducts.nodes;
 
   // Product page creating
   productsEdges.forEach((edge, index) => {

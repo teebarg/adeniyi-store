@@ -26,6 +26,8 @@ const exclude = [
   "ContentType",
   "PostFormat",
   "UserRole",
+  "Product",
+  "ProductCategory"
 ];
 const excludeList = () => {
   const obj = {};
@@ -56,35 +58,19 @@ module.exports = {
   plugins: [
     "gatsby-plugin-react-helmet",
     {
-      resolve: `gatsby-source-wordpress-experimental`,
+      resolve: "@pasdo501/gatsby-source-woocommerce",
       options: {
-        url:
-          process.env.WPGRAPHQL_URL ||
-          `http://allure-store.onlinewebshop.net/graphql`,
-        verbose: true,
-        develop: {
-          hardCacheMediaFiles: true,
+        // Base URL of WordPress site
+        api: process.env.WP_SITE || 'allure-store.onlinewebshop.net',
+        // true if using https. false otherwise.
+        https: false,
+        api_keys: {
+          consumer_key: process.env.WOO_KEY,
+          consumer_secret: process.env.WOO_SECRET,
         },
-        schema: {
-          timeout: 10000000,
-        },
-        debug: {
-          graphql: {
-            writeQueriesToDisk: true,
-          },
-        },
-        type: {
-          Post: {
-            limit:
-              process.env.NODE_ENV === `development`
-                ? // Lets just pull 50 posts in development to make it easy on ourselves.
-                  500
-                : // and we don't actually need more than 5000 in production for this particular site
-                  5000,
-          },
-          ...excludeList(),
-        },
-      },
+        // Array of strings with fields you'd like to create nodes for...
+        fields: ['products', 'products/categories', 'products/tags'],
+      }
     },
     "gatsby-plugin-lodash",
     `gatsby-plugin-emotion`,

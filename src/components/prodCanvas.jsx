@@ -7,6 +7,8 @@ import { Link } from "gatsby";
 import { translate, translateXY, shadow } from "../css/mixins";
 import Star from "./star";
 import Badge from "./badge";
+import Img from "gatsby-image";
+import Currency from "../utils/naira";
 
 const Card = styled.div`
   position: relative;
@@ -77,22 +79,26 @@ const AddCartBtn = styled(Link)`
 `;
 
 const ProdCanvas = ({ product }) => {
+  console.log(product);
   return (
     <>
       <Card className="relative flex flex-col">
         <div className="overflow-hidden relative">
           {product.onSale && <Badge />}
           <Link to={`/${product.slug}`} className="block">
-            <img
-              className="rounded-md w-full"
-              src={product.image && product.image.sourceUrl}
-              css={css`
-                height: 285px;
-                @media ${device.tablet} {
-                  height: 200px;
-                }
-              `}
-            />
+            {product.images && (
+              <img
+                className="rounded-md w-full"
+                src={product.images[0].src}
+                alt={product.images[0].alt}
+                css={css`
+                  height: 285px;
+                  @media ${device.tablet} {
+                    height: 200px;
+                  }
+                `}
+              />
+            )}
           </Link>
           <Social>
             <li>
@@ -144,9 +150,9 @@ const ProdCanvas = ({ product }) => {
           </h4>
           <span className="text-gray-900 font-bold text-xs mt-auto">
             <del className="mr-2 text-gray-600 font-normal">
-              {product.regularPrice}
+              {Currency(product.regular_price, 1)}
             </del>
-            {product.salePrice}
+            {Currency(product.sale_price, 1)}
           </span>
         </div>
       </Card>

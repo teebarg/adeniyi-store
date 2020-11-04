@@ -3,7 +3,7 @@ var Naira = new Intl.NumberFormat("en-NG", {
   currency: "NGN",
 });
 
-const Currency = (e) => Naira.format(e / 100);
+const Currency = (e, divisor = 100) => Naira.format(e / divisor);
 
 // export default Naira;
 export default Currency;
