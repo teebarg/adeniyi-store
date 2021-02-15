@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, { useContext } from "react";
 import { Helmet } from "react-helmet";
 import { graphql } from "gatsby";
 import MainLayout from "../layout";
@@ -9,22 +9,25 @@ import ProdCanvas from "../components/prodCanvas";
 import Category from "../components/category";
 import Input from "../components/input";
 import { css } from "@emotion/core";
+import Img from "gatsby-image";
 
-const CategoryPage = ({ data, pageContext, location }) => {
-  const products = data.category.products.nodes;
-  const banner = null;
+const CategoryPage = ({
+  data: {
+    category: { products },
+    banner,
+  },
+  pageContext,
+  location,
+}) => {
   const { category } = pageContext;
   const { setVisible } = useContext(storeContext);
   setVisible(false);
 
   return (
     <MainLayout>
-      <Helmet
-          title={`Shop ${category} @ low price | ${config.siteTitle}`}
-        />
+      <Helmet title={`Shop ${category} @ low price | ${config.siteTitle}`} />
       <SEO productListingSeo={products} category={category} />
       <div className="grid grid-cols-1 md:grid-cols-4 md:gap-4 lg:gap-6 py-2 mx-4 sm:mx-8 md:mx-10 lg:mx-14 bg-white">
-        
         {/* <SEO /> */}
         <div className="order-2 md:order-1 md:block py-6 px-4 bg-hash rounded">
           <h4 className="text-gray-800 uppercase font-extrabold mb-3">
@@ -71,10 +74,9 @@ const CategoryPage = ({ data, pageContext, location }) => {
         </div>
         <div className="order-1 md:order-2 md:col-span-3">
           {banner && (
-            <img
-              src={banner.sourceUrl}
-              srcSet={banner.srcSet}
-              alt="Banner"
+            <Img
+              fluid={banner.childImageSharp.fluid}
+              alt={banner.name}
               css={css`
                 max-height: 200px;
                 width: 100%;
@@ -99,10 +101,16 @@ export default CategoryPage;
 
 export const pageQuery = graphql`
   query CatPage($category: String!) {
-    category: wpProductCategory(slug: {eq: $category}) {
+    category: wcProductsCategories(slug: { eq: $category }) {
       products {
-        nodes {
-          ...ProductDetails
+        ...ProductDetails
+      }
+    }
+    banner: file(name: { eq: "category-ad" }) {
+      name
+      childImageSharp {
+        fluid {
+          ...GatsbyImageSharpFluid
         }
       }
     }

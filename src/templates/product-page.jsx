@@ -13,10 +13,12 @@ import CartControl from "../components/cartControl";
 import styled from "@emotion/styled";
 import { css } from "@emotion/core";
 import storeContext from "../layout/context";
+import Currency from "../utils/naira";
 
 /* eslint no-undef: "off" */
 
 const Breadcrumb = styled(Link)`
+  font-size: 70%;
   &:hover {
     color: var(--primary);
   }
@@ -39,9 +41,9 @@ const ProducPage = ({ data, pageContext, location }) => {
           <div className="md:col-span-5 md:flex md:gap-4 md:py-6 md:bg-white">
             <div className="-mx-4 md:mx-0 md:px-6 flex-1 grid ">
               <Carousel>
-                {product.galleryImages && product.galleryImages.nodes.map((image, key) => (
+                {product.images && product.images.map((image, key) => (
                   <div key={key} className="h-full">
-                    <img src={image.sourceUrl} className="h-full" />
+                    <img src={image.src} className="h-full" />
                   </div>
                 ))}
               </Carousel>
@@ -61,10 +63,10 @@ const ProducPage = ({ data, pageContext, location }) => {
                   </svg>
                 </li>
                 <li>
-                  { product.productCategories && (<Breadcrumb
-                    to={`/category/${ product.productCategories.nodes[0].slug}`}
+                  { product.categories && (<Breadcrumb
+                    to={`/category/${ product.categories[0].slug}`}
                   >
-                    {product.productCategories.nodes[0].name}
+                    {product.categories[0].name}
                   </Breadcrumb>)}
                 </li>
                 <li className="flex items-center">
@@ -93,19 +95,19 @@ const ProducPage = ({ data, pageContext, location }) => {
               </ul>
               <h1 className="my-2">{product.name}</h1>
               <div className="flex items-center mt-2">
-                <Star star={product.averageRating} />{" "}
-                <small className="ml-2">{product.reviewCount} reviews</small>
+                <Star star={product.average_rating} />{" "}
+                <small className="ml-2">{product.rating_count} reviews</small>
               </div>
               <div className="my-2">
-                <small className="font-bold mr-1">{product.salePrice}</small>
+                <small className="font-bold mr-1">{Currency(product.sale_price, 1)}</small>
                 <small className="line-through text-xs">
-                  {product.regularPrice}
+                  {Currency(product.regular_price, 1)}
                 </small>
               </div>
               <div
-                dangerouslySetInnerHTML={{ __html: product.shortDescription }}
+                dangerouslySetInnerHTML={{ __html: product.short_description }}
               />
-              <CartControl productId={product.productId} />
+              <CartControl productId={product.wordpress_id} />
             </div>
           </div>
           <div className="md:col-span-2 bg-white">
@@ -119,7 +121,7 @@ const ProducPage = ({ data, pageContext, location }) => {
         <div className="mb-10">
           <h3>Related Products</h3>
           <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 overflow-auto mt-4">
-            {product.related && product.related.nodes
+            {product.related_products && product.related_products
               .filter((item) => item.slug)
               .map((item) => (
                 <ProdCanvas product={item} key={item.id} />
@@ -135,41 +137,30 @@ export default ProducPage;
 
 export const pageQuery = graphql`
   query ProductById($id: String!) {
-    product: wpProduct(id: {eq: $id}) {
-      ... on WpSimpleProduct {
-        id
+    product: wcProducts(id: {eq: $id}) {
+      id
+      name
+      slug
+      average_rating
+      rating_count
+      description
+      short_description
+      sale_price
+      regular_price
+      on_sale
+      wordpress_id
+      categories {
         name
         slug
-        averageRating
-        reviewCount
-        description
-        shortDescription
-        salePrice
-        regularPrice
-        onSale
-        productId
-        productCategories {
-          nodes {
-            name
-            slug
-          }
-        }
-        image {
-          sourceUrl
-        }
-        description
-        link
-        sku
-        galleryImages {
-          nodes {
-            sourceUrl
-          }
-        }
-        related {
-          nodes {
-            ...ProductDetails
-          }
-        }
+      }
+      images {
+        name
+        src
+      }
+      sku
+      permalink
+      related_products {
+        ...ProductDetails
       }
     }
   }

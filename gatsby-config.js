@@ -5,16 +5,39 @@ require("dotenv").config({
 const urljoin = require("url-join");
 const config = require("./data/SiteConfig");
 
-const exclude = ['VisibleProduct', 'PaymentGateway', 'Menu', 'MenuItem', 'User', 'Taxonomy', 'Customer', 'ShippingMethod', 'Coupon', 'PaSize', 'PaColor', 'Order', 'Page', 'TaxRate', 'Refund', 'ShippingClass', 'Comment', 'ContentType', 'PostFormat', 'UserRole']
+const exclude = [
+  "VisibleProduct",
+  "PaymentGateway",
+  "Menu",
+  "MenuItem",
+  "User",
+  "Taxonomy",
+  "Customer",
+  "ShippingMethod",
+  "Coupon",
+  "PaSize",
+  "PaColor",
+  "Order",
+  "Page",
+  "TaxRate",
+  "Refund",
+  "ShippingClass",
+  "Comment",
+  "ContentType",
+  "PostFormat",
+  "UserRole",
+  "Product",
+  "ProductCategory"
+];
 const excludeList = () => {
-    const obj = {};
-    exclude.forEach(item => {
-      obj[item] = {
-        exclude: true
-      }
-    });
-    return obj;
-}
+  const obj = {};
+  exclude.forEach((item) => {
+    obj[item] = {
+      exclude: true,
+    };
+  });
+  return obj;
+};
 
 module.exports = {
   pathPrefix: config.pathPrefix === "" ? "/" : config.pathPrefix,
@@ -29,39 +52,25 @@ module.exports = {
         config.siteUrl,
         config.pathPrefix
       )}/logos/logo-512.png`,
-      copyright: config.copyright
-    }
+      copyright: config.copyright,
+    },
   },
   plugins: [
     "gatsby-plugin-react-helmet",
     {
-      resolve: `gatsby-source-wordpress-experimental`,
+      resolve: "@pasdo501/gatsby-source-woocommerce",
       options: {
-        url: `http://allure-store.onlinewebshop.net/graphql`,
-        verbose: true,
-        develop: {
-          hardCacheMediaFiles: true,
+        // Base URL of WordPress site
+        api: process.env.WP_SITE || 'allure-store.onlinewebshop.net',
+        // true if using https. false otherwise.
+        https: false,
+        api_keys: {
+          consumer_key: process.env.WOO_KEY,
+          consumer_secret: process.env.WOO_SECRET,
         },
-        schema: {
-          timeout: 10000000
-        },
-        debug: {
-          graphql: {
-            writeQueriesToDisk: true,
-          },
-        },
-        type: {
-          Post: {
-            limit:
-              process.env.NODE_ENV === `development`
-                ? // Lets just pull 50 posts in development to make it easy on ourselves.
-                  500
-                : // and we don't actually need more than 5000 in production for this particular site
-                  5000,
-          },
-          ...excludeList()
-        },
-      },
+        // Array of strings with fields you'd like to create nodes for...
+        fields: ['products', 'products/categories', 'products/tags'],
+      }
     },
     "gatsby-plugin-lodash",
     `gatsby-plugin-emotion`,
@@ -84,49 +93,49 @@ module.exports = {
       resolve: "gatsby-source-filesystem",
       options: {
         name: "assets",
-        path: `${__dirname}/static/`
-      }
+        path: `${__dirname}/static/`,
+      },
     },
     {
       resolve: "gatsby-source-filesystem",
       options: {
         name: "posts",
-        path: `${__dirname}/content/`
-      }
+        path: `${__dirname}/content/`,
+      },
     },
     {
       resolve: "gatsby-transformer-remark",
       options: {
         plugins: [
           {
-            resolve: `gatsby-remark-relative-images`
+            resolve: `gatsby-remark-relative-images`,
           },
           {
             resolve: "gatsby-remark-images",
             options: {
-              maxWidth: 690
-            }
+              maxWidth: 690,
+            },
           },
           {
-            resolve: "gatsby-remark-responsive-iframe"
+            resolve: "gatsby-remark-responsive-iframe",
           },
           "gatsby-remark-copy-linked-files",
           "gatsby-remark-autolink-headers",
-          "gatsby-remark-prismjs"
-        ]
-      }
+          "gatsby-remark-prismjs",
+        ],
+      },
     },
     {
       resolve: "gatsby-plugin-google-analytics",
       options: {
-        trackingId: config.googleAnalyticsID
-      }
+        trackingId: config.googleAnalyticsID,
+      },
     },
     {
       resolve: "gatsby-plugin-nprogress",
       options: {
-        color: config.themeColor
-      }
+        color: config.themeColor,
+      },
     },
     "gatsby-plugin-sharp",
     "gatsby-transformer-sharp",
@@ -147,16 +156,16 @@ module.exports = {
           {
             src: "/logos/logo-192.png",
             sizes: "192x192",
-            type: "image/png"
+            type: "image/png",
           },
           {
             src: "/logos/logo-512.png",
             sizes: "512x512",
-            type: "image/png"
-          }
-        ]
-      }
+            type: "image/png",
+          },
+        ],
+      },
     },
     "gatsby-plugin-offline",
-  ]
+  ],
 };

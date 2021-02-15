@@ -16,6 +16,7 @@ import "video-react/dist/video-react.css"; // import css
 import VizSensor from "react-visibility-sensor";
 import { device } from "../css/device";
 import { store } from "../../data/SiteConfig";
+import Img from "gatsby-image";
 
 const BannerContent = styled.div`
   position: absolute;
@@ -116,14 +117,21 @@ const CategoryCircle = styled.div`
   }
 `;
 
-const ProductList = ({ data: { bestseller: bs, deal: de }, location }) => {
+const ProductList = ({
+  data: {
+    bestseller: bs,
+    deal: de,
+    banners: bannerNode,
+    sidebar,
+    ad1,
+    videoad,
+  },
+  location,
+}) => {
   const { categories, setVisible } = useContext(storeContext);
-  const deal = de.products.nodes;
-  const bestseller = bs.products.nodes;
-  const banners = [];
-  const ad1 = null;
-  const sidebar = [];
-  const videoad = [];
+  const deal = de.products;
+  const bestseller = bs.products;
+  const banners = bannerNode.nodes;
 
   return (
     <MainLayout>
@@ -143,9 +151,9 @@ const ProductList = ({ data: { bestseller: bs, deal: de }, location }) => {
             >
               {banners.map((item, key) => (
                 <div key={key} style={{ opacity: 0.4 }}>
-                  <img
-                    src={item.sourceUrl}
-                    srcSet={item.srcSet}
+                  <Img
+                    fluid={item.childImageSharp.fluid}
+                    alt={item.name}
                     css={css`
                       height: 100vh;
                       @media ${device.tablet} {
@@ -171,11 +179,9 @@ const ProductList = ({ data: { bestseller: bs, deal: de }, location }) => {
 
           <div className="col-span-1 relative">
             <div>
-              <img
-                src={sidebar && sidebar.sourceUrl}
-                srcSet={sidebar && sidebar.srcSet}
-                className="md:h-screen"
-              />
+              {sidebar && (
+                <Img fluid={sidebar.childImageSharp.fluid} alt={sidebar.name} className="md:h-screen" />
+              )}
               <BannerContent
                 css={css`
                   padding: 10px 20px;
@@ -196,48 +202,48 @@ const ProductList = ({ data: { bestseller: bs, deal: de }, location }) => {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 justify-center mt-6 px-12">
-          {categories && categories
-            .filter((item) => item.slug != "uncategorized")
-            .map((item) => (
-              <div className="text-center" key={item.slug}>
-                <Category className="relative">
-                  <Link className="grid" to={`category/${item.slug}`}>
-                    {item.image && (
-                      <img
-                        src={item.image.sourceUrl}
-                        srcSet={item.image.srcSet}
-                        className="w-full h-auto rounded-full"
-                        style={{ maxHeight: 185 }}
-                        alt=""
-                      />
-                    )}
-                    <CategoryCircle>
-                      <h3>Product</h3>
-                    </CategoryCircle>
-                  </Link>
-                </Category>
-                <h3 className="">
-                  <Link
-                    css={css`
-                      text-transform: capitalize;
-                      &:hover {
-                        color: var(--primary);
-                      }
-                    `}
-                    to={`category/${item.slug}`}
-                  >
-                    {item.name}
-                  </Link>
-                </h3>
-              </div>
-            ))}
+          {categories &&
+            categories
+              .filter((item) => item.slug != "uncategorized")
+              .map((item) => (
+                <div className="text-center" key={item.slug}>
+                  <Category className="relative">
+                    <Link className="grid" to={`category/${item.slug}`}>
+                      {item.image && (
+                        <img
+                          src={item.image.src}
+                          className="w-full h-auto rounded-full"
+                          style={{ maxHeight: 185 }}
+                          alt={item.name}
+                        />
+                      )}
+                      <CategoryCircle>
+                        <h3>Product</h3>
+                      </CategoryCircle>
+                    </Link>
+                  </Category>
+                  <h3 className="">
+                    <Link
+                      css={css`
+                        text-transform: capitalize;
+                        &:hover {
+                          color: var(--primary);
+                        }
+                      `}
+                      to={`category/${item.slug}`}
+                    >
+                      {item.name}
+                    </Link>
+                  </h3>
+                </div>
+              ))}
         </div>
         <section>
           <div className="relative mt-6 md:mt-10">
             <div className="video-grids-info grid grid-cols-1 md:grid-cols-3 items-center bg-hash">
               <div className="col-span-2">
                 <Player
-                  poster={videoad && videoad.sourceUrl}
+                  poster={videoad && videoad.publicURL}
                   aspectRatio="16:9"
                 >
                   <source src="https://media.w3.org/2010/05/sintel/trailer_hd.mp4" />
@@ -305,12 +311,19 @@ const ProductList = ({ data: { bestseller: bs, deal: de }, location }) => {
                   </Button>
                 </div>
                 <div className="flex-1 mt-8 md:mt-0">
-                  <img
+                  {ad1 && (
+                    <Img
+                      fluid={ad1.childImageSharp.fluid}
+                      alt={ad1.name}
+                      className="rounded"
+                    />
+                  )}
+                  {/* <img
                     src={ad1 && ad1.sourceUrl}
                     srcSet={ad1 && ad1.srcSet}
                     className="rounded"
                     alt=""
-                  />
+                  /> */}
                 </div>
               </div>
             </div>
@@ -335,18 +348,43 @@ export default ProductList;
 
 export const pageQuery = graphql`
   query ProductListing {
-    deal: wpProductTag(slug: {eq: "deal"}) {
+    deal: wcProductsTags(slug: { eq: "deal" }) {
       products {
-        nodes {
-          ...ProductDetails
+        ...ProductDetails
+      }
+    }
+    banners: allFile(filter: { name: { regex: "/banner/" } }) {
+      nodes {
+        name
+        childImageSharp {
+          fluid {
+            ...GatsbyImageSharpFluid
+          }
         }
       }
     }
-    bestseller: wpProductTag(slug: {eq: "bestseller"}) {
-      products {
-        nodes {
-          ...ProductDetails
+    sidebar: file(name: { regex: "/sidebar/" }) {
+      name
+      childImageSharp {
+        fluid {
+          ...GatsbyImageSharpFluid
         }
+      }
+    }
+    ad1: file(name: { eq: "homead-1" }) {
+      name
+      childImageSharp {
+        fluid {
+          ...GatsbyImageSharpFluid
+        }
+      }
+    }
+    videoad: file(name: { eq: "videoad-1" }) {
+      publicURL
+    }
+    bestseller: wcProductsTags(slug: { eq: "bestseller" }) {
+      products {
+        ...ProductDetails
       }
     }
   }

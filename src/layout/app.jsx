@@ -7,25 +7,21 @@ const AppProvider = ({ location, children }) => {
   const [cart, setCart] = useState([]);
   const [visible, setVisible] = useState(true);
 
-  // const data = useStaticQuery(graphql`
-  //   query GlobalQuery1 {
-  //     beaf {
-  //       productCategories {
-  //         nodes {
-  //           name
-  //           slug
-  //           count
-  //           image {
-  //             sourceUrl(size: LARGE)
-  //             srcSet(size: LARGE)
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }
-  // `);
-  // const categories = data.beaf.productCategories.nodes;
-  const categories = [];
+  const data = useStaticQuery(graphql`
+    query GlobalQuery1 {
+      allWcProductsCategories {
+        nodes {
+          name
+          slug
+          count
+          image {
+            src
+          }
+        }
+      }
+    }
+  `);
+  const categories = data.allWcProductsCategories.nodes;
 
   useEffect(() => {
     async function getData() {
